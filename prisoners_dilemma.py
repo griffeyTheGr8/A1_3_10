@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 ##### 
 # Computer Science and Software Engineering
 # PLTW AP CS Principles
@@ -30,8 +28,22 @@ from __future__ import print_function
 # scores, moves, reports = main_play([team1]*3+[example1])
 # section0, section1, section2, section3 = reports
 #######
+'''
+Programmer: Mr. G
+Issues w/ original sourcecode:
+1. reload is no longer available
+    - this issue was fixed by importing the importlib module to the script.
+    - need to add the module importlib before reload to call the class appropriately.
+2. Relied on outdated mode of division from Python 2.x
+    - had to go in and find each instance of floating point division (/) and replace with integer division (//).
+3. Broke up example and team modules into separate lists
+    - allows me to keep better track of examples and teams.
+    - modules list is now there to only hold the scripts that I want to run through the game. 
+'''
+
 import random
-import os.path              
+import os.path
+import importlib
     
 import example0, example1, example2, example3
 import example4, example5, example6, example7
@@ -41,13 +53,18 @@ import team10, team11, team12, team13, team14
 betray = example1
 collude = example0
 
+# A list of the PLTW developed samples.
 ex_modules = [example0, example1, example2, example3, example4, example5, example6, example7]
 
+# A list of student/teacher developed scripts. 
 team_modules = [team0, team1, team2, team3, team4, team5, team6, team7, team8, team9, team10, 
 team11, team12, team13, team14]
 
+# A list of the scripts that will be run through the IPD program. 
+modules = [example0, example1, example2, example3, example4, example5, example6, example7, team4]
+
 for module in modules:
-    reload(module)
+    importlib.reload(module) #importlib. required to use reload
     print ('reloaded',module)
     for required_variable in ['team_name', 'strategy_name', 'strategy_description']:
         if not hasattr(module, required_variable):
@@ -89,10 +106,10 @@ def play_tournament(modules):
             player2 = modules[second_team_index]
             score1, score2, moves1, moves2 = play_iterative_rounds(player1, player2)
             capitalize(moves1, moves2)
-            scores[first_team_index][second_team_index] = score1/len(moves1) # int division not an issue
+            scores[first_team_index][second_team_index] = score1//len(moves1) # no longer int division replaced w/ //
             moves[first_team_index][second_team_index] = moves1
             # Redundant, but record this for the other player, from their perspective
-            scores[second_team_index][first_team_index] = score2/len(moves2) 
+            scores[second_team_index][first_team_index] = score2//len(moves2) # no longer int division replaced w/ //
             moves[second_team_index][first_team_index] = moves2
         # Playing yourself doesn't do anything
         scores[first_team_index][first_team_index] = 0
@@ -270,7 +287,7 @@ def make_section2(modules, scores):
     for index in range(len(modules)):
         section2_list.append((modules[index].team_name,
                               'P'+str(index),
-                              str(sum(scores[index])/len(modules)),
+                              str(sum(scores[index])//len(modules)), # no longer int division replaced w/ //
                               str(modules[index].strategy_name)))
     section2_list.sort(key=lambda x: int(x[2]), reverse=True)
     
@@ -380,5 +397,5 @@ def post_to_file(string, filename='tournament.txt', directory=''):
  
 ### Call main_play() if this file is executed
 if __name__ == '__main__':
-    scores, moves, reports = main_play(modules[0:4])   
+    scores, moves, reports = main_play(modules) # This should be adjusted within modules list on line 64 
     section0, section1, section2, section3 = reports
