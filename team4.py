@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 ####
 # Each team's file must define four tokens:
 #     team_name: a string
@@ -10,7 +8,7 @@ from __future__ import print_function
 
 team_name = 'LO_Num_1' # Only 10 chars displayed.
 strategy_name = 'Intelligent Betrayal'
-strategy_description = 'How does this strategy decide?'
+strategy_description = 'I decide who wins and loses!'
 
 ag_history = []
 
